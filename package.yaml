@@ -1,14 +1,15 @@
 name:                nowdoc
 version:             0.1.0.0
-github:              "githubuser/nowdoc"
+github:              "YoshikuniJujo/nowdoc"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+author:              "Yoshikuni Jujo"
+maintainer:          "PAF01143@nifty.ne.jp"
+copyright:           "2018 Yoshikuni Jujo"
 
 extra-source-files:
 - README.md
 - ChangeLog.md
+- samples/*
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -17,24 +18,14 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/nowdoc#readme>
+description:         Please see the README on GitHub at <https://github.com/YoshikuniJujo/nowdoc#readme>
 
 dependencies:
 - base >= 4.7 && < 5
+- template-haskell
 
 library:
   source-dirs: src
-
-executables:
-  nowdoc-exe:
-    main:                Main.hs
-    source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - nowdoc
 
 tests:
   nowdoc-test:
