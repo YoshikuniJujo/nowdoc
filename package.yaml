@@ -12,8 +12,8 @@ extra-source-files:
 - samples/*
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+synopsis:            Here document without variable expansion like PHP Nowdoc
+category:            Text
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
