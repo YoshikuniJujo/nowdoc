@@ -6,6 +6,8 @@ Only two transformation.
 * remove head newline if exist
 * remove one space from '|', space, space, ..., ']'
 
+## short examples
+
 ```hs
 hello = [nowdoc|
 abc
@@ -46,4 +48,22 @@ is
 
 ```hs
 hello = "hello |]\nworld| ]\n! |  ]"
+```
+
+## run perl
+
+```hs
+{-# LANGUAGE QuasiQuotes #-}
+
+import System.Process
+import Text.Nowdoc
+
+main :: IO ()
+main = () <$ rawSystem "perl" ["-e", [nowdoc|
+use strict;
+use warnings;
+
+my $hello = "Hello, world!\n";
+print $hello;
+|]]
 ```
