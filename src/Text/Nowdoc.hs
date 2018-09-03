@@ -1,26 +1,17 @@
+{-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
 module Text.Nowdoc (nowdoc) where
 
-import Language.Haskell.TH (litE, stringL)
+import Language.Haskell.TH (stringE)
 import Language.Haskell.TH.Quote (QuasiQuoter(..))
 
 nowdoc :: QuasiQuoter
 nowdoc = QuasiQuoter {
-	quoteExp = litE . stringL . unescape . dropHeadNewline,
-	quotePat = const . error $ errorString "a pattern",
-	quoteType = const . error $ errorString "a type",
-	quoteDec = const . error $ errorString "a declaration"
-	}
-
-errorString :: String -> String
-errorString ctx =
-	"You have used the `nowdoc' QuasiQoter in " ++ ctx ++
-	" context; you must only use it in an expression context"
-
-dropHeadNewline :: String -> String
-dropHeadNewline ('\n' : cs) = cs
-dropHeadNewline cs = cs
+	quoteExp = stringE . unescape . \case '\n' : cs -> cs; cs -> cs,
+	quotePat = const $ err "pattern",
+	quoteType = const $ err "type",
+	quoteDec = const $ err "declaration" }
 
 unescape :: String -> String
 unescape ('|' : cs) = case span (== ' ') cs of
@@ -28,3 +19,8 @@ unescape ('|' : cs) = case span (== ' ') cs of
 	(ss, cs') -> '|' : ss ++ unescape cs'
 unescape (c : cs) = c : unescape cs
 unescape "" = ""
+
+err :: String -> a
+err ctx = error $
+	"You have used the `nowdoc' QuasiQoter in a " ++ ctx ++
+	" context; you must only use it in an expression context"
