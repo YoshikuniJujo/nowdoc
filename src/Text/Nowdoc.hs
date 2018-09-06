@@ -101,7 +101,7 @@ It read file as binary file.
 
 @
 main :: IO ()
-main = putStr [binfile|foo.dat|]
+main = print [binfile|foo.dat|]
 @
 -}
 

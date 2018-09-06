@@ -1,12 +1,20 @@
 # nowdoc
 
+Package nowdoc contain 3 QuasiQuotes.
+
+* nowdoc: Simplest here document with only two transformation.
+* txtfile: It incerts text file contents as string.
+* binfile: It incerts binary file contents as string.
+
+### QuasiQuoter nowdoc
+
 Simplest here document.
 Only two transformation.
 
 * remove head newline if exist
 * remove one space from '|', space, space, ..., ']'
 
-## short examples
+### short examples
 
 ```hs
 hello = [nowdoc|
@@ -50,7 +58,7 @@ is
 hello = "hello |]\nworld| ]\n! |  ]"
 ```
 
-## run perl
+### run perl
 
 ```hs
 {-# LANGUAGE QuasiQuotes #-}
@@ -68,7 +76,7 @@ print $hello;
 |]]
 ```
 
-## ASCII art
+### ASCII art
 
 ```hs
 {-# LANGUAGE QuasiQuotes #-}
@@ -95,4 +103,24 @@ $$e$P"    $b     d$`    "$$c$F
       `4$$$c.$$$..e$$P"        
           `^^^^^^^`
 |]
+```
+
+### QuasiQuoter txtfile
+
+It incerts file contents as string without transformation.
+It read file as text file (with default encoding on your system).
+
+```hs
+main :: IO ()
+main = putStr [txtfile|foo.txt|]
+```
+
+### QuasiQuoter binfile
+
+It incerts file contents as string without transformation.
+It read file as binary file.
+
+```hs
+main :: IO ()
+main = print [binfile|foo.dat|]
 ```
