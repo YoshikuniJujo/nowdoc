@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## v0.1.1.0
+
 * add QuasiQuoter txtfile
 * add QuasiQuoter binfile
 
