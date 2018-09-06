@@ -53,11 +53,7 @@ Hello, world!
 -}
 
 nowdoc :: QuasiQuoter
-nowdoc = QuasiQuoter {
-	quoteExp = stringE . unescape . \case '\n' : cs -> cs; cs -> cs,
-	quotePat = const $ err "pattern",
-	quoteType = const $ err "type",
-	quoteDec = const $ err "declaration" }
+nowdoc = qq { quoteExp = stringE . unescape . \case '\n' : cs -> cs; cs -> cs }
 
 unescape :: String -> String
 unescape ('|' : cs) = case span (== ' ') cs of
@@ -65,11 +61,6 @@ unescape ('|' : cs) = case span (== ' ') cs of
 	(ss, cs') -> '|' : ss ++ unescape cs'
 unescape (c : cs) = c : unescape cs
 unescape "" = ""
-
-err :: String -> a
-err ctx = error $
-	"You have used the `nowdoc' QuasiQoter in a " ++ ctx ++
-	" context; you must only use it in an expression context"
 
 {- |
 QuasiQuoter txtfile incerts file contents as string without transformation.
@@ -82,18 +73,14 @@ main = putStr [txtfile|foo.txt|]
 -}
 
 txtfile :: QuasiQuoter
-txtfile = QuasiQuoter {
-	quoteExp = readFileQ,
-	quotePat = const $ err "pattern",
-	quoteType = const $ err "type",
-	quoteDec = const $ err "declaration" }
+txtfile = qq { quoteExp = toQ readFile }
 
-readFileQ :: FilePath -> ExpQ
-readFileQ fp_ = do
-	cnt <- runIO $ readFile fp
+toQ :: (FilePath -> IO String) -> FilePath -> ExpQ
+toQ rf fp_ = do
+	cnt <- runIO $ rf fp
 	addDependentFile fp
 	stringE cnt
-	where fp = dropWhile isSpace $ dropWhileEnd isSpace fp_
+	where fp = dropBoth isSpace fp_
 
 {- |
 QuasiQuoter binfile incerts file contents as string without transformation.
@@ -106,15 +93,23 @@ main = print [binfile|foo.dat|]
 -}
 
 binfile :: QuasiQuoter
-binfile = QuasiQuoter {
-	quoteExp = readBinFileQ,
+binfile = qq { quoteExp = toQ $ (BSC.unpack <$>) . BSC.readFile }
+
+-- ERROR MESSAGE
+
+qq :: QuasiQuoter
+qq = QuasiQuoter {
+	quoteExp = undefined,
 	quotePat = const $ err "pattern",
 	quoteType = const $ err "type",
 	quoteDec = const $ err "declaration" }
 
-readBinFileQ :: FilePath -> ExpQ
-readBinFileQ fp_ = do
-	cnt <- runIO $ BSC.unpack <$> BSC.readFile fp
-	addDependentFile fp
-	stringE cnt
-	where fp = dropWhile isSpace $ dropWhileEnd isSpace fp_
+err :: String -> a
+err ctx = error $
+	"You have used the `nowdoc' QuasiQoter in a " ++ ctx ++
+	" context; you must only use it in an expression context"
+
+-- TOOLS
+
+dropBoth :: (a -> Bool) -> [a] -> [a]
+dropBoth = (.) <$> dropWhile <*> dropWhileEnd
