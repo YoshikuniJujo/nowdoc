@@ -21,7 +21,7 @@ category:            Text
 description:         Please see the README on GitHub at <https://github.com/YoshikuniJujo/nowdoc#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base >= 4.8 && < 5
 - bytestring
 - template-haskell
 
